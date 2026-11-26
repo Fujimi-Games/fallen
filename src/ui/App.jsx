@@ -3,6 +3,8 @@ import { createGame } from '../game/createGame.js'
 import { Dossier } from './Dossier.jsx'
 import { Record } from './Record.jsx'
 import { Settings } from './Settings.jsx'
+import { ConsentBanner, Network } from './Network.jsx'
+import { createPlatform } from '../platform/danboru.js'
 
 // the menu's star-chart: concentric circles on a dotted axis, a ring of dots that
 // turns very slowly, and a few small suns (after an old orrery diagram)
@@ -46,14 +48,18 @@ export default function App() {
   const [hud, setHud] = useState(null)
   const [choosing, setChoosing] = useState(false) // the difficulty step after Play
   const [settings, setSettings] = useState(false)
+  // the Fujimi player network; a no-op without the public VITE_GJ_* values
+  const [platform] = useState(() => createPlatform(import.meta.env, { appVersion: __APP_VERSION__ }))
+  const [net, setNet] = useState(platform.state)
+  useEffect(() => platform.subscribe(setNet), [platform])
 
   useEffect(() => {
-    const app = createGame(canvasRef.current, setHud)
+    const app = createGame(canvasRef.current, setHud, platform)
     gameRef.current = app.game
     window.__game = app.game
     app.start()
     return () => app.destroy()
-  }, [])
+  }, [platform])
 
   const game = gameRef.current
   const attract = hud?.mode === 'attract'
@@ -67,6 +73,7 @@ export default function App() {
       {hud && game ? <Dossier hud={hud} /> : <aside className="panel" />}
       <div className="stage">
         <canvas ref={canvasRef} />
+        {net.enabled && net.consent === 'unset' && <ConsentBanner platform={platform} />}
         {settings && hud && game && <Settings game={game} hud={hud} onClose={() => setSettings(false)} />}
         {attract && (
           <div className="menu">
@@ -118,7 +125,13 @@ export default function App() {
           </div>
         )}
       </div>
-      {hud && game ? <Record hud={hud} game={game} onSettings={openSettings} /> : <aside className="panel" />}
+      {hud && game ? (
+        <Record hud={hud} game={game} onSettings={openSettings}>
+          {net.enabled && <Network net={net} platform={platform} />}
+        </Record>
+      ) : (
+        <aside className="panel" />
+      )}
     </div>
   )
 }

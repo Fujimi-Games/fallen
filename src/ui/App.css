@@ -885,3 +885,83 @@ kbd {
   letter-spacing: 0.22em;
   font-size: 10px;
 }
+
+/* the Fujimi player network (Network.jsx): consent prompt and account panel */
+.consent {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 7;
+  width: min(460px, 92%);
+  transform: translateX(-50%);
+  padding: 16px 18px 4px;
+  border: 1px solid var(--line);
+  background: rgba(11, 20, 36, 0.94);
+}
+.consent p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--dim);
+}
+.consent .row {
+  display: flex;
+  gap: 10px;
+}
+.network {
+  margin-top: 22px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.network .fine {
+  margin-bottom: 10px;
+}
+.network .email {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+.network input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 8px;
+  font: 13px var(--font-mono);
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+.network input:focus {
+  outline: 1px solid var(--gold);
+}
+.network .ach-head {
+  margin-top: 6px;
+}
+.achievements {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.achievements li {
+  display: grid;
+  gap: 1px;
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+  color: var(--faint);
+}
+.achievements li b {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.achievements li span {
+  font-size: 12.5px;
+}
+.achievements li.got {
+  color: var(--ink);
+}
+.achievements li.got b {
+  color: var(--gold);
+}

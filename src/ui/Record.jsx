@@ -1,7 +1,7 @@
 import { hue } from './hue.js'
 import { keyLabel } from '../game/bindings.js'
 
-export function Record({ hud, game, onSettings }) {
+export function Record({ hud, game, onSettings, children }) {
   return (
     <aside className="panel record">
       <div className="eyebrow">This run</div>
@@ -95,6 +95,7 @@ export function Record({ hud, game, onSettings }) {
         <li><kbd>{keyLabel(hud.bindings.pause)}</kbd><span>pause</span></li>
       </ul>
       <p className="note">Bullets never stop bullets: only melee cuts them.</p>
+      {children}
     </aside>
   )
 }

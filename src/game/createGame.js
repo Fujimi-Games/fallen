@@ -10,7 +10,8 @@ import { Renderer } from '../render/Renderer.js'
 import { StateLog, fmt } from './StateLog.js'
 import { requestFairBoss, resetFairWorker } from '../fairness/client.js'
 
-export function createGame(canvas, onHud) {
+// platform: the optional player network (src/platform/danboru.js); it only listens to events
+export function createGame(canvas, onHud, platform = null) {
   const store = new Store()
   const events = new Emitter()
   const input = new Input()
@@ -24,6 +25,7 @@ export function createGame(canvas, onHud) {
   if (import.meta.env && import.meta.env.DEV) globalThis.__fallen = { game, log }
 
   const offAudio = music.attach(events)
+  const offPlatform = platform ? platform.attach(game, events) : () => {}
   // a log line per boss, so a strange one can be reported by its seed
   events.on('boss', ({ def }) => {
     const melee = def.traits.filter((t) => t.cat === 'melee').length
@@ -59,6 +61,7 @@ export function createGame(canvas, onHud) {
       loop.stop()
       input.detach()
       offAudio()
+      offPlatform()
       renderer.destroy()
       game.destroy()
     },

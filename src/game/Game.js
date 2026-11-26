@@ -151,6 +151,7 @@ export class Game {
 
   beginRun() {
     this.run.begin()
+    this.events.emit('run')
     this.arsenal = emptyArsenal() // a run starts with nothing inherited
     saveArsenal(this.store, this.arsenal)
   }
@@ -180,6 +181,7 @@ export class Game {
   // new one at the slow end of the ramp. There is no re-rolling a harder boss.
   restartRun() {
     this.audio.resume()
+    if (this.mode === 'intro' || this.mode === 'fight' || this.mode === 'won') this.events.emit('abandon') // a fallen run has already ended
     this.run.saveBest()
     this.beginRun()
     this.enterFight(0, () => {
@@ -495,6 +497,8 @@ export class Game {
     const inh = pickInheritance(b.def)
     const got = inheritTrait(this.arsenal, inh.slot, inh.entry)
     const gotAlso = inh.also ? inheritTrait(this.arsenal, inh.also.slot, inh.also.entry) : null
+    this.events.emit('inherit', { slot: inh.slot, key: inh.entry.key, kind: got.kind })
+    if (gotAlso) this.events.emit('inherit', { slot: inh.also.slot, key: inh.also.entry.key, kind: gotAlso.kind })
     saveArsenal(this.store, this.arsenal)
     this.banner = {
       text: 'BOSS DOWN',
